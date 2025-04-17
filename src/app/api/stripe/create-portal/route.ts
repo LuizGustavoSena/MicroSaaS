@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
     if(!userId)
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-
     try {
         const userRef = db.collection('users').doc(userId);
         const userDoc = await userRef.get();

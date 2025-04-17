@@ -1,3 +1,4 @@
+import { auth } from "@/app/lib/auth";
 import stripe from "@/app/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,6 +9,13 @@ export async function POST(req: NextRequest){
 
     if(!price) 
         return NextResponse.json({error: 'Price not found'}, { status: 500 });
+
+    const session = await auth();
+    const userId = session?.user?.id;
+    const userEmail = session?.user?.email;
+    
+    if(!userId || !userEmail)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const metadata = {
         testId
