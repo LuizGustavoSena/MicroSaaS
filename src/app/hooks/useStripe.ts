@@ -11,34 +11,10 @@ export function useStripe(){
             setStringe(stripeInstance);
         }
         
-    loadStripeAsync();
+        loadStripeAsync();
     }, []);
 
     async function createPaymentStripeCheckout(checkoutData: any) {
-        if(!stripe) return;
-        
-        try {
-            const response = await fetch('/api/stripe/create-paycheckout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(checkoutData),
-            });
-
-            const data = await response.json();
-
-            await stripe.redirectToCheckout({
-                sessionId: data.id,
-            });
-
-        } catch (error) {
-            console.error('Error creating checkout session:', error);
-            return;
-        }
-    }
-
-    async function createSubscriptionStripeCheckout(checkoutData: any) {
         if(!stripe) return;
         
         try {
@@ -53,15 +29,15 @@ export function useStripe(){
             const data = await response.json();
 
             await stripe.redirectToCheckout({
-                sessionId: data.id,
+                sessionId: data.sessionId,
             });
-
         } catch (error) {
             console.error('Error creating checkout session:', error);
             return;
         }
     }
-    async function createPaymentIntentStripeCheckout(checkoutData: any) {
+    
+    async function createSubscriptionStripeCheckout(checkoutData: any) {
         if(!stripe) return;
         
         try {
@@ -76,9 +52,8 @@ export function useStripe(){
             const data = await response.json();
 
             await stripe.redirectToCheckout({
-                sessionId: data.id,
+                sessionId: data.sessionId,
             });
-
         } catch (error) {
             console.error('Error creating checkout session:', error);
             return;
@@ -86,21 +61,26 @@ export function useStripe(){
     }
 
     async function handleCreateStripePortal(){
-        const response = await fetch('/api/stripe/create-portal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+        try {
+            const response = await fetch('/api/stripe/create-portal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        window.location.href = data.url;
+            window.location.href = data.url;
+        }catch(error) {
+            console.error('Error creating portal session:', error);
+            return;
+        }
     }
     
     return {
         createPaymentStripeCheckout,
-        createPaymentIntentStripeCheckout,
+        createSubscriptionStripeCheckout,
         handleCreateStripePortal
     }
 }
