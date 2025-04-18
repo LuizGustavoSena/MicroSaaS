@@ -21,7 +21,8 @@ export async function POST(req: NextRequest){
     const customerId = await getOrCreateCustomer(userId, userEmail);
 
     const metadata = {
-        testId
+        testId,
+        price
     };
 
     try {

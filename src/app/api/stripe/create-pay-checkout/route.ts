@@ -10,7 +10,8 @@ export async function POST(req: NextRequest){
         return NextResponse.json({error: 'Price not found'}, { status: 500 });
 
     const metadata = {
-        testId
+        testId,
+        price
     };
 
     try {
